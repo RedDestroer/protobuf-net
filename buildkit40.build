@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="BuildKit"
+         xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- This build file builds protobuf-net for CF 2.0, CF 3.5 and Silverlight 2.0;
+    It also packages all builds.
+  
+  -->
+
+  <!-- See http://msbuildtasks.tigris.org -->
+  <Import Project="$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets"/>
+
+  <PropertyGroup>
+    <OutputDirectory>tmp</OutputDirectory>
+  </PropertyGroup>
+
+  <Target Name="BuildKit">
+    
+    <RemoveDir Directories="$(OutputDirectory)"/>
+    <MakeDir Directories="$(OutputDirectory)"/>
+    <MakeDir Directories="$(OutputDirectory)\Zips"/>
+
+    <RemoveDir Directories="protobuf-net-net40\obj; protobuf-net-net40\bin"/>
+    <MSBuild Projects="protobuf-net-net40\protobuf-net-net40.csproj" Properties="OutputPath=..\$(OutputDirectory)\NET40; Configuration=Release; Platform=AnyCPU; DefineConstants=TRACE FEAT_COMPILER FEAT_SERVICEMODEL PLAT_BINARYFORMATTER PLAT_XMLSERIALIZER" Targets="Rebuild"/>
+
+    <RemoveDir Directories="protobuf-net-net40\obj; protobuf-net-net40\bin"/>
+    <MSBuild Projects="protobuf-net-net40\protobuf-net-net40.csproj" Properties="OutputPath=..\$(OutputDirectory)\NET40-sm; Configuration=Release; Platform=AnyCPU; DefineConstants=TRACE FEAT_COMPILER PLAT_BINARYFORMATTER PLAT_XMLSERIALIZER" Targets="Rebuild"/>
+
+    <!-- zip the various outputs -->
+    <ItemGroup>
+      <ZipN40 Include="$(OutputDirectory)\NET40\*.*" />
+    </ItemGroup>
+
+    <RemoveDir Directories="$(OutputDirectory)\Zips"/>
+
+  </Target>
+</Project>
